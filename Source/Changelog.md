@@ -1,3 +1,6 @@
+## 0.0.7
+- Added support for devices with alternate I2C Addresses
+
 # RoboRIO SDK Change Log
 - Improved output error messages for initialization functions in C++ and Java
 
