@@ -69,9 +69,8 @@ class Rev2mDistanceSensor : public frc::ErrorBase, public frc::SendableBase, pub
          *                          kLongRange
          *                          kHighSpeed
          *                      Refer to data sheet for profile specific performance specs.
-         * @param i2cAddress    The I2C address of which the device uses.
          */
-        Rev2mDistanceSensor(Port port, DistanceUnit units, RangeProfile profile = RangeProfile::kDefault, int i2cAddress = 0x53);
+        Rev2mDistanceSensor(Port port, DistanceUnit units, RangeProfile profile = RangeProfile::kDefault);
 
         ~Rev2mDistanceSensor() override;
 
