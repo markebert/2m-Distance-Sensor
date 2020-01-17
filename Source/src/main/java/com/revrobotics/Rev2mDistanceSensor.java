@@ -70,8 +70,41 @@ public class Rev2mDistanceSensor extends SendableBase implements PIDSource {
     private double m_timestamp = -1;
     private boolean m_stopping = false;
     private static double m_measurementPeriod = 0.05;
-    private int m_addr = 0x53;
+    private int m_addr;
     private int m_port;
+
+    /**
+     * Creat an instance of the Rev 2m Distance Sensor.
+     *
+     * @param port          The I2C port to which the device is connected.
+     * @param units         The units returned in either kInches or kMilliMeters
+     * @param profile       Range profile for the device. Valid options are:
+     *                          kDefault
+     *                          kHighAccuracy
+     *                          kLongRange
+     *                          kHighSpeed
+     *                      Refer to data sheet for profile specific performance specs.
+     * @param i2cAddress    The I2C address of which the device uses.
+     */
+    public Rev2mDistanceSensor(Port port, Unit units, RangeProfile profile, int i2cAddress) {
+        m_units = units;
+
+        if(port == Port.kOnboard)
+            m_port = 0;
+        else
+            m_port = 1;
+
+        m_addr = i2cAddress;
+            
+        VL53L0XJNI.Init(m_port, m_addr);
+
+        if(!initialize()) {
+            DriverStation.reportError(String.format("Error initializing Rev 2M device on port " + 
+                                                    "%s. Please check your connections", 
+                                                    port == Port.kMXP ? "MXP" : "Onboard"), false);
+        }
+
+    }
 
     /**
      * Creat an instance of the Rev 2m Distance Sensor.
@@ -86,21 +119,7 @@ public class Rev2mDistanceSensor extends SendableBase implements PIDSource {
      *                      Refer to data sheet for profile specific performance specs.
      */
     public Rev2mDistanceSensor(Port port, Unit units, RangeProfile profile) {
-        m_units = units;
-
-        if(port == Port.kOnboard)
-            m_port = 0;
-        else
-            m_port = 1;
-            
-        VL53L0XJNI.Init(m_port, m_addr);
-
-        if(!initialize()) {
-            DriverStation.reportError(String.format("Error initializing Rev 2M device on port " + 
-                                                    "%s. Please check your connections", 
-                                                    port == Port.kMXP ? "MXP" : "Onboard"), false);
-        }
-
+        this(port, units, profile, 0x53);
     }
 
     public Rev2mDistanceSensor(Port port) {
